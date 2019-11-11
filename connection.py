@@ -116,18 +116,18 @@ def insert_data(db):
                 query_alumno = ("""INSERT INTO Alumno(id, nombre) 
                     VALUES (NULL,'{0}')"                
                 """.format(student_name))
-
+            
+            for _ in range(n):                
                 subject_name = r_data(db, 'Materia')
                 query_materia = ("""INSERT INTO Materia(clave, nombre)
                     VALUES (NULL, '{0}')                
                 """.format(subject_name))
-
+            
+            for _ in range(n):                
                 subject, student, value  = r_data(db, 'Calificacinones')
                 query_calificaciones = ("""INSERT INTO Calificaciones(clave_Materia, id_Alumno, valor)
                     VALUES ('{0}','{1}','{2}')
-                """.format(subject, student, value))
-
-                
+                """.format(subject, student, value))                
     except:
         db.rollback()
         print(">>Error al insertar contenido!")
