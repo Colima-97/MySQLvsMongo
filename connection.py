@@ -174,18 +174,31 @@ def drop_tables(db):
     else:
         print("Tablas borradas!")
 
+def read_data_materias():
+    listMaterias = []
+    materias = open('materias.txt', 'r')
+    for i in materias.readlines():
+        if(i != None or i != ""):
+            listMaterias.append(i)
+    return listMaterias
+
+def get_randon_data_materias():
+    response = read_data_materias()
+    matter = r.choice(response)
+    return matter
+
 def r_data(db, table):
     try:
         cursor = db.cursor()
 
         if(table == 'Alumnos'):
-            n_alumno = 
+            
             return 
         elif(table == 'Materia'):
-
+            n_subject = get_randon_data_materias()
         else:
-
-    except:
+            print('blablabla')
+    except SystemError:
         pass
     else:
         pass
