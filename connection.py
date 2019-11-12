@@ -196,6 +196,7 @@ def r_data(db, table):
             return 
         elif(table == 'Materia'):
             n_subject = get_randon_data_materias()
+            return n_subject
         else:
             pass
     except SystemError:
