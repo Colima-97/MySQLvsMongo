@@ -14,6 +14,7 @@ import time as t
 t.strftime("%I:%M:%S") #Formato de 12 horas
 
 list_materias = []
+list_students_name = []
 
 def connection():
     try:
@@ -112,7 +113,9 @@ def insert_data(db):
         tablesDatabase = get_tables(db)
         if(len(tablesDatabase) != 0):
             if(list_materias == [] or list_materias == None):
-                read_data_materias()            
+                read_data_materias()
+            if(list_students_name == [] or list_students_name == None):
+                read_data_nombres()
             n = int(input("¿Cuántos datos desea insertar? "))
             for _ in range(n):
                 student_name = r_data(db, 'Alumno')
@@ -185,13 +188,21 @@ def read_data_materias():
             i = i.rstrip("\n")
             list_materias.append(i)
 
+def read_data_nombres():
+    students_name = open('nombres.txt', 'r')
+    for i in students_name.readlines():
+        if(i != None or i != ""):
+            i = i.rstrip("\n")
+            list_students_name.append(i)
+
+
 def r_data(db, table):
     try:
         cursor = db.cursor()
 
         if(table == 'Alumnos'):
-            
-            return 
+            n_alumno = r.choice(list_students_name)
+            return n_alumno
         elif(table == 'Materia'):
             n_subject = r.choice(list_materias)
             return n_subject
