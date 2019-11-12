@@ -194,7 +194,7 @@ def r_data(db, table):
             return 
         elif(table == 'Materia'):
             n_subject = r.choice(list_materias)
-            # next logic
+            return n_subject
         else:
             pass
     except SystemError:
