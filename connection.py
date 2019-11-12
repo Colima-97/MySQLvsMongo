@@ -179,6 +179,7 @@ def read_data_materias():
     materias = open('materias.txt', 'r')
     for i in materias.readlines():
         if(i != None or i != ""):
+            i = i.rstrip("\n")
             listMaterias.append(i)
     return listMaterias
 
