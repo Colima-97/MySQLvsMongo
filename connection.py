@@ -13,6 +13,8 @@ import random as r
 import time as t
 t.strftime("%I:%M:%S") #Formato de 12 horas
 
+list_materias = []
+
 def connection():
     try:
         db = pymysql.connect("sql9.freemysqlhosting.net","sql9311549","HZWWnleJ9m","sql9311549")
@@ -108,16 +110,17 @@ def insert_data(db):
     try:
         cursor = db.cursor()
         tablesDatabase = get_tables(db)
-        if(len(tablesDatabase) != 0):            
+        if(len(tablesDatabase) != 0):
+            if(list_materias == [] or list_materias == None):
+                read_data_materias()            
             n = int(input("¿Cuántos datos desea insertar? "))
             for _ in range(n):
-
                 student_name = r_data(db, 'Alumno')
                 query_alumno = ("""INSERT INTO Alumno(id, nombre) 
                     VALUES (NULL,'{0}')"                
                 """.format(student_name))
             
-            for _ in range(n):                
+            for _ in range(n):         
                 subject_name = r_data(db, 'Materia')
                 query_materia = ("""INSERT INTO Materia(clave, nombre)
                     VALUES (NULL, '{0}')                
@@ -174,18 +177,27 @@ def drop_tables(db):
     else:
         print("Tablas borradas!")
 
+def read_data_materias():
+
+    materias = open('materias.txt', 'r')
+    for i in materias.readlines():
+        if(i != None or i != ""):
+            i = i.rstrip("\n")
+            list_materias.append(i)
+
 def r_data(db, table):
     try:
         cursor = db.cursor()
 
         if(table == 'Alumnos'):
-            n_alumno = 
+            
             return 
         elif(table == 'Materia'):
-
+            n_subject = r.choice(list_materias)
+            return n_subject
         else:
-
-    except:
+            pass
+    except SystemError:
         pass
     else:
         pass
