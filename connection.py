@@ -196,7 +196,7 @@ def del_data(db):
                     query_materia = ("TRUNCATE TABLE Materia;")
                     query_alumno = ("TRUNCATE TABLE Alumno;")
 
-                    datos_borrados = count_records(db,'Alumno')
+                    deleted_data = count_records(db,'Alumno')
 
                     cursor.execute(query_calificaciones)
                     cursor.execute(query_materia)
