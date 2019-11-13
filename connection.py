@@ -142,7 +142,7 @@ def insert_data(db):
             n = int(input("¿Cuántos datos desea insertar? "))
 
             for _ in range(n):
-                student_name = r_data(db, 'Alumno')
+                student_name = randomize_data(db, 'Alumno')
                 query_alumno = ("""INSERT INTO Alumno(id, nombre) 
                     VALUES (NULL,'{0}')"                
                 """.format(student_name))
@@ -150,7 +150,7 @@ def insert_data(db):
                 db.commit()
             
             for _ in range(n):         
-                subject_name = r_data(db, 'Materia')
+                subject_name = randomize_data(db, 'Materia')
                 query_materia = ("""INSERT INTO Materia(clave, nombre)
                     VALUES (NULL, '{0}')                
                 """.format(subject_name))
@@ -158,7 +158,7 @@ def insert_data(db):
                 db.commit()
             
             for _ in range(n):                
-                subject, student, value  = r_data(db, 'Calificacinones')
+                subject, student, value  = randomize_data(db, 'Calificacinones')
                 query_calificaciones = ("""INSERT INTO Calificaciones(clave_Materia, id_Alumno, valor)
                     VALUES ('{0}','{1}','{2}')
                 """.format(subject, student, value))
@@ -237,11 +237,11 @@ def read_data_nombres():
         print(">>Error con el archivo")
         print(sys.exc_info()[0])
 
-def r_data(db, table):
+def randomize_data(db, table):
     try:
         if(table == 'Alumno'):
-            n_alumno = r.choice(list_students_name)
-            return n_alumno
+            n_student = r.choice(list_students_name)
+            return n_student
         elif(table == 'Materia'):
             n_subject = r.choice(list_materias)
             return n_subject
