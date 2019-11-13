@@ -203,7 +203,7 @@ def read_data_nombres():
 
 
 
-def r_data(db, table):
+def read_data_files(db, table):
     try:
         cursor = db.cursor()
 
