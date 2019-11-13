@@ -131,6 +131,7 @@ def show_data(db):
 
 def insert_data(db):
     try:
+        number_of_records_inserted = 0
         cursor = db.cursor()
         tablesDatabase = get_tables(db)
         if(len(tablesDatabase) != 0):
@@ -151,6 +152,7 @@ def insert_data(db):
                 """.format(student_name))
                 cursor.execute(query_alumno)
                 db.commit()
+                number_of_records_inserted += 1
             
             for _ in range(n):         
                 subject_name = randomize_data(db, 'Materia')
@@ -159,6 +161,7 @@ def insert_data(db):
                 """.format(subject_name))
                 cursor.execute(query_materia)
                 db.commit()
+                number_of_records_inserted += 1
             
             for _ in range(n):                
                 subject, student, value  = randomize_data(db, 'Calificacinones')
@@ -167,6 +170,7 @@ def insert_data(db):
                 """.format(subject, student, value))
                 cursor.execute(query_calificaciones)
                 db.commit()
+                number_of_records_inserted += 1
 
             print("Datos insertados!")
             times_file = open('timesMySQL.txt', mode="a", encoding = 'UTF-8')
@@ -208,7 +212,7 @@ def del_data(db):
                     cursor.execute(query_materia)
                     cursor.execute(query_alumno)
 
-                    print("Se borraron {0}!".format(datos_borrados))
+                    print("Se borraron {0}!".format(deleted_data))
                     put_constraints(db)
                 else:
                     print("Opción no válida, abortando borrado de registros!")
