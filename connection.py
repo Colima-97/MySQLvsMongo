@@ -144,7 +144,7 @@ def insert_data(db):
             for _ in range(n):
                 student_name = randomize_data(db, 'Alumno')
                 query_alumno = ("""INSERT INTO Alumno(id, nombre) 
-                    VALUES (NULL,'{0}')"                
+                    VALUES (NULL,'{0}')                
                 """.format(student_name))
                 cursor.execute(query_alumno)
                 db.commit()
@@ -301,7 +301,7 @@ def put_constraints(db):
 def count_records(db, table):
     cursor = db.cursor()
     cursor.execute("SELECT COUNT(*) FROM {0}".format(table))
-    items = cursor.rownumber
+    items = cursor._rows[0][0]
     return (items)
 
 def read_data_materias():
@@ -336,9 +336,9 @@ def randomize_data(db, table):
             return n_subject
         else:
             subject = count_records(db,'Alumno')
-            subject = (r.randrange(subject) if subject != 0 else subject)
+            subject = (r.randrange(1,subject,1) if subject != 0 else 1)
             student = count_records(db,'Materia')
-            student = (r.randrange(student) if student != 0 else student)
+            student = (r.randrange(1,student,1) if student != 0 else 1)
             value = r.randrange(101)
             return subject, student, value
     except:
