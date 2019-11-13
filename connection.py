@@ -215,7 +215,7 @@ def del_data(db):
                 elif(confirmation == 1):
                     print("\nBorrando datos...")
                     
-                    datos_borrados = count_records(db,'Alumno')
+                    deleted_data = count_records(db,'Alumno')
                     deleted_data = len(get_tables(db))
                     
                     drop_tables(db)
