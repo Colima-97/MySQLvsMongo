@@ -138,7 +138,9 @@ def insert_data(db):
                 read_data_materias()
             if(list_students_name == [] or list_students_name == None):
                 read_data_nombres()
+                
             n = int(input("¿Cuántos datos desea insertar? "))
+
             for _ in range(n):
                 student_name = r_data(db, 'Alumno')
                 query_alumno = ("""INSERT INTO Alumno(id, nombre) 
@@ -159,7 +161,10 @@ def insert_data(db):
                 subject, student, value  = r_data(db, 'Calificacinones')
                 query_calificaciones = ("""INSERT INTO Calificaciones(clave_Materia, id_Alumno, valor)
                     VALUES ('{0}','{1}','{2}')
-                """.format(subject, student, value))                
+                """.format(subject, student, value))
+                cursor.execute(query_calificaciones)
+                db.commit()
+
     except:
         db.rollback()
         print(">>Error al insertar contenido!")
