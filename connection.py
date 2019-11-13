@@ -122,6 +122,8 @@ def insert_data(db):
                 query_alumno = ("""INSERT INTO Alumno(id, nombre) 
                     VALUES (NULL,'{0}')"                
                 """.format(student_name))
+                cursor.execute(query_alumno)
+                db.commit()
             
             for _ in range(n):         
                 subject_name = r_data(db, 'Materia')
@@ -198,8 +200,7 @@ def read_data_nombres():
 
 def r_data(db, table):
     try:
-        cursor = db.cursor()
-
+        #cursor = db.cursor()
         if(table == 'Alumnos'):
             n_alumno = r.choice(list_students_name)
             return n_alumno
