@@ -181,19 +181,26 @@ def drop_tables(db):
         print("Tablas borradas!")
 
 def read_data_materias():
+    try:
+        materias = open('materias.txt', 'r')
+        for i in materias.readlines():
+            if(i != None or i != ""):
+                i = i.rstrip("\n")
+                list_materias.append(i)
+    except:
+        print(">>>Ocurrió un error!...")
 
-    materias = open('materias.txt', 'r')
-    for i in materias.readlines():
-        if(i != None or i != ""):
-            i = i.rstrip("\n")
-            list_materias.append(i)
 
 def read_data_nombres():
-    students_name = open('nombres.txt', 'r')
-    for i in students_name.readlines():
-        if(i != None or i != ""):
-            i = i.rstrip("\n")
-            list_students_name.append(i)
+    try:
+        students_name = open('nombres.txt', 'r')
+        for i in students_name.readlines():
+            if(i != None or i != ""):
+                i = i.rstrip("\n")
+                list_students_name.append(i)
+    except:
+        print(">>>Ocurrió un error!...")
+
 
 
 def r_data(db, table):
