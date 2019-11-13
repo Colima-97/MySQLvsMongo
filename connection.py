@@ -201,8 +201,8 @@ def r_data(db, table):
         cursor = db.cursor()
 
         if(table == 'Alumnos'):
-            n_alumno = r.choice(list_students_name)
-            return n_alumno
+            n_student = r.choice(list_students_name)
+            return n_student
         elif(table == 'Materia'):
             n_subject = r.choice(list_materias)
             return n_subject
