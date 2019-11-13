@@ -186,19 +186,26 @@ def count_records(db, table):
     return (r.randrange(items+1))
 
 def read_data_materias():
-
-    materias = open('materias.txt', 'r')
-    for i in materias.readlines():
-        if(i != None or i != ""):
-            i = i.rstrip("\n")
-            list_materias.append(i)
+    try:
+        materias = open('materias.txt', mode = 'r', encoding='UTF-8')
+        for i in materias.readlines():
+            if(i != None or i != ""):
+                i = i.rstrip("\n")
+                list_materias.append(i)
+    except:
+        print(">>Error con el archivo")
+        print(sys.exc_info()[0])
 
 def read_data_nombres():
-    students_name = open('nombres.txt', 'r')
-    for i in students_name.readlines():
-        if(i != None or i != ""):
-            i = i.rstrip("\n")
-            list_students_name.append(i)
+    try:
+        students_name = open('nombres.txt', mode = 'r', encoding='UTF-8')
+        for i in students_name.readlines():
+            if(i != None or i != ""):
+                i = i.rstrip("\n")
+                list_students_name.append(i)
+    except:
+        print(">>Error con el archivo")
+        print(sys.exc_info()[0])
 
 def r_data(db, table):
     try:
