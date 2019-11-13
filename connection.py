@@ -184,7 +184,7 @@ def del_data(db):
         cursor = db.cursor()
         tablesDatabase = get_tables(db)
         if(len(tablesDatabase) != 0):
-            opt = int(input("Inserte un número\n\n1-Borrar todos los datos\t2-Borrar datos y tablas\t\t0-Cancelar\n\nOpción: "))
+            opt = int(input("Elija una opción\n\n1-Borrar todos los datos\t2-Borrar datos y tablas\t\t0-Cancelar\n\nOpción: "))
 
             if(opt == 0):
                 print("\n.:Cancelar:.\nNingún registro fue afectado")
@@ -357,12 +357,8 @@ def main():
         db = connection()
         while True:
             print("\n.:Menú principal:.")
-            opt = int(input("Inserte una opción\n\n\
-                1-Crear tablas\t2-Mostrar todos los datos \
-                3-Insertar muchos datos\t4-Borrar todos los datos \
-                0-Salir\n\n\
-                Opción: "))
-
+            print("--Por favor, elija un opción--")
+            opt = int(input('1.- Crear tablas  2.- Mostrar todos los datos  3.- Insertar muchos datos  4.- Borrar todos los datos  0.- Salir\nOpción: '))
             if(opt == 0):
                 print("Hasta luego!")
                 break
