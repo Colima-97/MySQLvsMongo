@@ -171,7 +171,7 @@ def insert_data(db):
 
             print("Datos insertados!")
             times_file = open('timesMySQL.txt', mode="a", encoding = 'UTF-8')
-            times_file.write("\n"+str(number_of_records_inserted)+" datos insertados exitosamente\nHora de fin: " + t.strftime("%X"))
+            times_file.write("\n"+str(n*3)+" datos insertados exitosamente\nHora de fin: " + t.strftime("%X"))
             times_file.close()
         else:
             print("No hay tablas aún!")
