@@ -125,6 +125,8 @@ def insert_data(db):
                 query_materia = ("""INSERT INTO Materia(clave, nombre)
                     VALUES (NULL, '{0}')                
                 """.format(subject_name))
+                cursor.execute(query_materia)
+                db.commit()
             
             for _ in range(n):                
                 subject, student, value  = r_data(db, 'Calificacinones')
