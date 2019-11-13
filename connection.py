@@ -86,21 +86,43 @@ def show_data(db):
         cursor = db.cursor()
         tablesDatabase = get_tables(db)
         if(len(tablesDatabase) != 0):
-            query_count_alumno = ("SELECT COUNT (id) FROM Alumno;")
-            query_count_materia = ("SELECT COUNT (clave) FROM Materia;")
-            query_count_calif = ("SELECT COUNT (valor) FROM Calificaciones")
-
+            while(True):
+                n = int(input('¿Cuántos datos desea ver? '))
+                if(n < 1):
+                    print(">>Error! Debe ser mayor a 1")
+                else:
+                    break
+            
+            print('\n'*2)
             print("Alumno")
-            cursor.execute("SELECT * FROM Alumno LIMIT 10;")
-            print("Tiene {0} registros".format(cursor.execute(query_count_alumno))) 
+            cursor.execute("SELECT * FROM Alumno LIMIT {0};".format(n))
+            student_result = cursor.fetchall()
+            for row in student_result:
+                id = row[0]
+                name = row[1]
+                print("id: {0} \t name: {1}".format(id,name))
+            print("Tiene {0} registros en total".format(count_records(db,'Alumno'))) 
             
+            print('\n'*2)
             print("Materia")
-            cursor.execute("SELECT * FROM Materia LIMIT 10;")
-            print("Tiene {0} registros".format(cursor.execute(query_count_materia)))
+            cursor.execute("SELECT * FROM Materia LIMIT {0};".format(n))
+            subject_result = cursor.fetchall()
+            for row in subject_result:
+                key = row[0]                
+                name = row[1]
+                print("clave_Materia: {0} \t nombre_Materia: {1}".format(key,name))
+            print("Tiene {0} registros en total".format(count_records(db,'Materia')))
             
+            print('\n'*2)
             print("Calificaciones")
-            cursor.execute("SELECT * FROM Calificaciones LIMIT 10;")
-            print("Tiene {0} registros".format(cursor.execute(query_count_calif)))
+            cursor.execute("SELECT * FROM Calificaciones LIMIT {0};".format(n))
+            score_result = cursor.fetchall()
+            for row in score_result:
+                key = row[0]
+                id = row[1]
+                value = row[2]
+                print("clave_Materia: {0} \t id_Alumno {1} \t valor: {2}".format(key,id,value))
+            print("Tiene {0} registros en total".format(count_records(db,'Calificaciones')))
         else:
             print("No hay tablas aún!")
     except:
