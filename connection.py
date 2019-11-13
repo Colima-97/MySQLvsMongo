@@ -144,7 +144,7 @@ def insert_data(db):
             for _ in range(n):
                 student_name = randomize_data(db, 'Alumno')
                 query_alumno = ("""INSERT INTO Alumno(id, nombre) 
-                    VALUES (NULL,'{0}')"                
+                    VALUES (NULL,'{0}')                
                 """.format(student_name))
                 cursor.execute(query_alumno)
                 db.commit()
@@ -165,15 +165,70 @@ def insert_data(db):
                 cursor.execute(query_calificaciones)
                 db.commit()
 
+                print("Datos insertados!")
+        else:
+            print("No hay tablas aún!")
     except:
         db.rollback()
         print(">>Error al insertar contenido!")
-        print(sys.exc_info()[0])
-    else:
-        print("Datos insertados!")
+        print(sys.exc_info()[0]) 
 
-def del_data():
-    pass
+def del_data(db):
+    try:
+        cursor = db.cursor()
+        tablesDatabase = get_tables(db)
+        if(len(tablesDatabase) != 0):
+            opt = int(input("Inserte un número\n\n1-Borrar todos los datos\t2-Borrar datos y tablas\t\t0-Cancelar\n\nOpción: "))
+
+            if(opt == 0):
+                print("\n.:Cancelar:.\nNingún registro fue afectado")
+            elif(opt == 1):
+                print("\n.:Borrar todos los datos:.")
+
+                confirmation = int(input('¡Advertencia, se borrarán todos los datos!\n¿Continuar? (0 - No\t 1 - Sí)\nOpción: '))
+                if(confirmation == 0):
+                    print("Abortando borrado de registros!")
+                elif(confirmation == 1):
+                    print("\nBorrando datos...")
+
+                    drop_constraints(db)
+                    query_calificaciones = ("TRUNCATE TABLE Calificaciones;")
+                    query_materia = ("TRUNCATE TABLE Materia;")
+                    query_alumno = ("TRUNCATE TABLE Alumno;")
+
+                    deleted_data = count_records(db,'Alumno')
+
+                    cursor.execute(query_calificaciones)
+                    cursor.execute(query_materia)
+                    cursor.execute(query_alumno)
+
+                    print("Se borraron {0}!".format(datos_borrados))
+                    put_constraints(db)
+                else:
+                    print("Opción no válida, abortando borrado de registros!")
+            elif(opt == 2):
+                print("\n.:Borrar datos y tablas:.")
+
+                confirmation = int(input('¡Advertencia, se borrarán todos los datos y las tablas también!\n¿Continuar? (0 - No\t 1 - Sí)\nOpción: '))
+                if(confirmation == 0):
+                    print("Abortando borrado de registros!")
+                elif(confirmation == 1):
+                    print("\nBorrando datos...")
+                    
+                    deleted_data = count_records(db,'Alumno')
+                    deleted_data = len(get_tables(db))
+                    
+                    drop_tables(db)
+
+                    print("Se borraron {0} datos y {1} tablas".format(datos_borrados, tablas_borradas))
+            else:
+                print("Opción no válida, abortando borrado de registros!")
+        else:
+            print("No hay tablas aún!")
+    except:
+        db.rollback()
+        print(">>Error al borrar datos! Operación cancelada!")
+        print(sys.exc_info()[0])
 
 #--------------------------------CRUD--------------------------
 #------------------------------HELPERS-------------------------
@@ -190,30 +245,64 @@ def get_tables(db):
 def drop_tables(db):
     try:        
         cursor = db.cursor()
-        
-        a = ("ALTER TABLE Materia DROP FOREIGN KEY id_A_Materia_FK;")
-        b = ("ALTER TABLE Calificaciones DROP FOREIGN KEY clave_M_Calif_FK;")
-        c = ("ALTER TABLE Calificaciones DROP FOREIGN KEY id_A_Calif_FK;")
-        cursor.execute(a)
-        cursor.execute(b)
-        cursor.execute(c)
 
-        d_tables = ("""
-            drop table IF EXISTS Calificaciones, Materia, Alumno;                    
-        """)
-        cursor.execute(d_tables)
+        done = drop_constraints(db)
+        if(done):
+            d_tables = ("""
+                drop table IF EXISTS Calificaciones, Materia, Alumno;                    
+            """)
+            cursor.execute(d_tables)
+            print("Tablas borradas!")
+        else:
+            print("Tablas NO borradas!")
     except:
         db.rollback()
         print(">>Error al borrar tablas")
+        print(sys.exc_info()[0])        
+
+def drop_constraints(db):
+    try:
+        cursor = db.cursor()
+        a = ("ALTER TABLE Calificaciones DROP FOREIGN KEY clave_M_Calif_FK;")
+        b = ("ALTER TABLE Calificaciones DROP FOREIGN KEY id_A_Calif_FK;")
+        cursor.execute(a)
+        cursor.execute(b)        
+    except:
+        db.rollback()        
+        print(">>Error al eliminar constraints")
         print(sys.exc_info()[0])
+        return False
     else:
-        print("Tablas borradas!")
+        print("Constraints borradas!")
+        return True
+
+def put_constraints(db):
+    try:    
+        cursor = db.cursor()    
+        a = ("""ALTER TABLE Calificaciones
+            ADD CONSTRAINT clave_M_Calif_FK
+            FOREIGN KEY (clave_Materia) REFERENCES Materia(clave)
+            ON DELETE NO ACTION 
+            ON UPDATE NO ACTION;
+        """)
+        b = ("""ALTER TABLE Calificaciones
+            ADD CONSTRAINT id_A_Calif_FK
+            FOREIGN KEY (id_Alumno) REFERENCES Alumno(id)
+            ON DELETE NO ACTION 
+            ON UPDATE NO ACTION;
+        """)
+        cursor.execute(a)
+        cursor.execute(b)      
+    except:
+        db.rollback()        
+        print(">>Error al actualizar constraints")
+        print(sys.exc_info()[0])
 
 def count_records(db, table):
     cursor = db.cursor()
     cursor.execute("SELECT COUNT(*) FROM {0}".format(table))
-    items = cursor.rownumber
-    return (r.randrange(items) if items != 0 else items)
+    items = cursor._rows[0][0]
+    return (items)
 
 def read_data_materias():
     try:
@@ -247,9 +336,9 @@ def randomize_data(db, table):
             return n_subject
         else:
             subject = count_records(db,'Alumno')
-            subject = (r.randrange(subject) if subject != 0 else subject)
+            subject = (r.randrange(1,subject,1) if subject != 0 else 1)
             student = count_records(db,'Materia')
-            student = (r.randrange(student) if student != 0 else student)
+            student = (r.randrange(1,student,1) if student != 0 else 1)
             value = r.randrange(101)
             return subject, student, value
     except:
@@ -262,28 +351,27 @@ def main():
         db = connection()
         while True:
             print("\n.:Menú principal:.")
-            opc = int(input("Inserte una opción\n\n\
+            opt = int(input("Inserte una opción\n\n\
                 1-Crear tablas\t2-Mostrar todos los datos \
                 3-Insertar muchos datos\t4-Borrar todos los datos \
                 0-Salir\n\n\
                 Opción: "))
 
-            if(opc == 0):
+            if(opt == 0):
                 print("Hasta luego!")
                 break
-            elif(opc == 1):
-                print(".:Crear tablas:.")
+            elif(opt == 1):
+                print("\n\n.:Crear tablas:.")
                 create_tables(db)
-            elif(opc == 2):
-                print(".:Mostrar todos los datos:.")
+            elif(opt == 2):
+                print("\n\n.:Mostrar todos los datos:.")
                 show_data(db)
-            elif(opc == 3):
-                print(".:Insertar muchos datos:.")
+            elif(opt == 3):
+                print("\n\n.:Insertar muchos datos:.")
                 insert_data(db)
-            elif(opc == 4):
-                print(".:Borrar todos los datos:.")
-            elif(opc == 404):
-                drop_tables(db)
+            elif(opt == 4):
+                print("\n\n.:Borrar todos los datos:.")
+                del_data(db)    
             else:
                 print("Opción incorrecta, intente de nuevo!")
     except:
