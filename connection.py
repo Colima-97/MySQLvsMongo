@@ -151,10 +151,8 @@ def get_tables(db):
     tablesDatabase = []
     cursor.execute("SHOW TABLES;")
        
-    if cursor:
-        tablesDatabase = [
-            tablesDatabase.append(table) 
-            for table in cursor]
+    if (cursor.rowcount != 0):
+        tablesDatabase = [table[0] for table in cursor]
 
     return tablesDatabase
 
