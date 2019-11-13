@@ -152,7 +152,6 @@ def insert_data(db):
                 """.format(student_name))
                 cursor.execute(query_alumno)
                 db.commit()
-                number_of_records_inserted += 1
             
             for _ in range(n):         
                 subject_name = randomize_data(db, 'Materia')
