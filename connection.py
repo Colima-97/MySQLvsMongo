@@ -245,10 +245,9 @@ def r_data(db, table):
             student = (r.randrange(student) if student != 0 else student)
             value = r.randrange(101)
             return subject, student, value
-    except SystemError:
-        pass
-    else:
-        pass
+    except:
+        print('>>Error al crear los datos')
+        print(sys.exc_info()[0])
 #------------------------------HELPERS-------------------------
 #-------------------------------MAIN---------------------------
 def main():
