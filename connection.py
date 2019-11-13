@@ -170,7 +170,6 @@ def insert_data(db):
                 """.format(subject, student, value))
                 cursor.execute(query_calificaciones)
                 db.commit()
-                number_of_records_inserted += 1
 
             print("Datos insertados!")
             times_file = open('timesMySQL.txt', mode="a", encoding = 'UTF-8')
