@@ -216,7 +216,7 @@ def del_data(db):
                     print("\nBorrando datos...")
                     
                     datos_borrados = count_records(db,'Alumno')
-                    tablas_borradas = len(get_tables(db))
+                    deleted_data = len(get_tables(db))
                     
                     drop_tables(db)
 
