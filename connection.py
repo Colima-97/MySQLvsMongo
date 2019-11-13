@@ -180,6 +180,13 @@ def drop_tables(db):
     else:
         print("Tablas borradas!")
 
+def count_records(db, table):
+    cursor = db.cursor()
+    items = cursor.execute("""
+        SELECT COUNT(*) FROM {0}
+    """.format(table))
+    return (r.randrange(items+1))
+
 def read_data_materias():
 
     materias = open('materias.txt', 'r')
@@ -195,7 +202,6 @@ def read_data_nombres():
             i = i.rstrip("\n")
             list_students_name.append(i)
 
-
 def r_data(db, table):
     try:
         cursor = db.cursor()
@@ -207,7 +213,10 @@ def r_data(db, table):
             n_subject = r.choice(list_materias)
             return n_subject
         else:
-            pass
+            subject = count_records(db,'Alumnos')
+            student = count_records(db,'Materia')
+            value = r.randrange(101)
+            return subject, student, value
     except SystemError:
         pass
     else:
@@ -236,7 +245,7 @@ def main():
                 show_data(db)
             elif(opc == 3):
                 print(".:Insertar muchos datos:.")
-                #insert_data(db)
+                insert_data(db)
             elif(opc == 4):
                 print(".:Borrar todos los datos:.")
             elif(opc == 404):
