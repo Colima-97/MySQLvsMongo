@@ -180,10 +180,8 @@ def drop_tables(db):
 
 def count_records(db, table):
     cursor = db.cursor()
-    items = cursor.execute("""
-        SELECT COUNT(*) FROM {0}
-    """.format(table))
-    return (r.randrange(items+1))
+    items = cursor.execute("SELECT COUNT(*) FROM {0}".format(table))
+    return (r.randrange(items))
 
 def read_data_materias():
     try:
@@ -211,14 +209,14 @@ def r_data(db, table):
     try:
         cursor = db.cursor()
 
-        if(table == 'Alumnos'):
+        if(table == 'Alumno'):
             n_alumno = r.choice(list_students_name)
             return n_alumno
         elif(table == 'Materia'):
             n_subject = r.choice(list_materias)
             return n_subject
         else:
-            subject = count_records(db,'Alumnos')
+            subject = count_records(db,'Alumno')
             student = count_records(db,'Materia')
             value = r.randrange(101)
             return subject, student, value
