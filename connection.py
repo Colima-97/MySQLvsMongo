@@ -172,8 +172,61 @@ def insert_data(db):
     else:
         print("Datos insertados!")
 
-def del_data():
-    pass
+def del_data(db):
+    try:
+        cursor = db.cursor()
+        tablesDatabase = get_tables(db)
+        if(len(tablesDatabase) != 0):
+            opt = int(input("Inserte un número\n\n1-Borrar todos los datos\t2-Borrar datos y tablas\t\t0-Cancelar\n\nOpción: "))
+
+            if(opt == 0):
+                print("\n.:Cancelar:.\nNingún registro fue afectado")
+            elif(opt == 1):
+                print("\n.:Borrar todos los datos:.")
+
+                confirmation = int(input('¡Advertencia, se borrarán todos los datos!\n¿Continuar? (0 - No\t 1 - Sí)\nOpción: '))
+                if(confirmation == 0):
+                    print("Abortando borrado de registros!")
+                elif(confirmation == 1):
+                    print("\nBorrando datos...")
+
+                    query_calificaciones = ("TRUNCATE TABLE Calificaciones;")
+                    query_materia = ("TRUNCATE TABLE Materia;")
+                    query_alumno = ("TRUNCATE TABLE Alumno;")
+
+                    datos_borrados = count_records(db,'Alumno')
+
+                    cursor.execute(query_calificaciones)
+                    cursor.execute(query_materia)
+                    cursor.execute(query_alumno)
+
+                    print("Se borraron {0}!".format(datos_borrados))
+                else:
+                    print("Opción no válida, abortando borrado de registros!")
+            elif(opt == 2):
+                print("\n.:Borrar datos y tablas:.")
+
+                confirmation = int(input('¡Advertencia, se borrarán todos los datos y las tablas también!\n¿Continuar? (0 - No\t 1 - Sí)\nOpción: '))
+                if(confirmation == 0):
+                    print("Abortando borrado de registros!")
+                elif(confirmation == 1):
+                    print("\nBorrando datos...")
+                    
+                    datos_borrados = count_records(db,'Alumno')
+                    tablas_borradas = len(get_tables(db))
+                    
+                    drop_tables(db)
+
+                    print("Se borraron {0} datos y {1} tablas".format(datos_borrados, tablas_borradas))
+            else:
+                print("Opción no válida, abortando borrado de registros!")
+        else:
+            print("No hay tablas aún!")
+
+    except:
+        db.rollback()
+        print(">>Error al borrar datos! Operación cancelada!")
+        print(sys.exc_info()[0])
 
 #--------------------------------CRUD--------------------------
 #------------------------------HELPERS-------------------------
@@ -262,28 +315,27 @@ def main():
         db = connection()
         while True:
             print("\n.:Menú principal:.")
-            opc = int(input("Inserte una opción\n\n\
+            opt = int(input("Inserte una opción\n\n\
                 1-Crear tablas\t2-Mostrar todos los datos \
                 3-Insertar muchos datos\t4-Borrar todos los datos \
                 0-Salir\n\n\
                 Opción: "))
 
-            if(opc == 0):
+            if(opt == 0):
                 print("Hasta luego!")
                 break
-            elif(opc == 1):
-                print(".:Crear tablas:.")
+            elif(opt == 1):
+                print("\n\n.:Crear tablas:.")
                 create_tables(db)
-            elif(opc == 2):
-                print(".:Mostrar todos los datos:.")
+            elif(opt == 2):
+                print("\n\n.:Mostrar todos los datos:.")
                 show_data(db)
-            elif(opc == 3):
-                print(".:Insertar muchos datos:.")
+            elif(opt == 3):
+                print("\n\n.:Insertar muchos datos:.")
                 insert_data(db)
-            elif(opc == 4):
-                print(".:Borrar todos los datos:.")
-            elif(opc == 404):
-                drop_tables(db)
+            elif(opt == 4):
+                print("\n\n.:Borrar todos los datos:.")
+                del_data(db)    
             else:
                 print("Opción incorrecta, intente de nuevo!")
     except:
