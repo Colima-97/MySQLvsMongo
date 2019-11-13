@@ -182,7 +182,7 @@ def count_records(db, table):
     cursor = db.cursor()
     cursor.execute("SELECT COUNT(*) FROM {0}".format(table))
     items = cursor.rownumber
-    return ( 0 if items == 0 else r.randrange(items))
+    return (r.randrange(items) if items != 0 else items)
 
 def read_data_materias():
     try:
@@ -218,7 +218,9 @@ def r_data(db, table):
             return n_subject
         else:
             subject = count_records(db,'Alumno')
+            subject = (r.randrange(subject) if subject != 0 else subject)
             student = count_records(db,'Materia')
+            student = (r.randrange(student) if student != 0 else student)
             value = r.randrange(101)
             return subject, student, value
     except SystemError:
