@@ -165,12 +165,13 @@ def insert_data(db):
                 cursor.execute(query_calificaciones)
                 db.commit()
 
+                print("Datos insertados!")
+        else:
+            print("No hay tablas aún!")
     except:
         db.rollback()
         print(">>Error al insertar contenido!")
-        print(sys.exc_info()[0])
-    else:
-        print("Datos insertados!")
+        print(sys.exc_info()[0]) 
 
 def del_data(db):
     try:
@@ -190,6 +191,7 @@ def del_data(db):
                 elif(confirmation == 1):
                     print("\nBorrando datos...")
 
+                    drop_constraints(db)
                     query_calificaciones = ("TRUNCATE TABLE Calificaciones;")
                     query_materia = ("TRUNCATE TABLE Materia;")
                     query_alumno = ("TRUNCATE TABLE Alumno;")
@@ -201,6 +203,7 @@ def del_data(db):
                     cursor.execute(query_alumno)
 
                     print("Se borraron {0}!".format(datos_borrados))
+                    put_constraints(db)
                 else:
                     print("Opción no válida, abortando borrado de registros!")
             elif(opt == 2):
@@ -222,7 +225,6 @@ def del_data(db):
                 print("Opción no válida, abortando borrado de registros!")
         else:
             print("No hay tablas aún!")
-
     except:
         db.rollback()
         print(">>Error al borrar datos! Operación cancelada!")
@@ -243,30 +245,64 @@ def get_tables(db):
 def drop_tables(db):
     try:        
         cursor = db.cursor()
-        
-        a = ("ALTER TABLE Materia DROP FOREIGN KEY id_A_Materia_FK;")
-        b = ("ALTER TABLE Calificaciones DROP FOREIGN KEY clave_M_Calif_FK;")
-        c = ("ALTER TABLE Calificaciones DROP FOREIGN KEY id_A_Calif_FK;")
-        cursor.execute(a)
-        cursor.execute(b)
-        cursor.execute(c)
 
-        d_tables = ("""
-            drop table IF EXISTS Calificaciones, Materia, Alumno;                    
-        """)
-        cursor.execute(d_tables)
+        done = drop_constraints(db)
+        if(done):
+            d_tables = ("""
+                drop table IF EXISTS Calificaciones, Materia, Alumno;                    
+            """)
+            cursor.execute(d_tables)
+            print("Tablas borradas!")
+        else:
+            print("Tablas NO borradas!")
     except:
         db.rollback()
         print(">>Error al borrar tablas")
+        print(sys.exc_info()[0])        
+
+def drop_constraints(db):
+    try:
+        cursor = db.cursor()
+        a = ("ALTER TABLE Calificaciones DROP FOREIGN KEY clave_M_Calif_FK;")
+        b = ("ALTER TABLE Calificaciones DROP FOREIGN KEY id_A_Calif_FK;")
+        cursor.execute(a)
+        cursor.execute(b)        
+    except:
+        db.rollback()        
+        print(">>Error al eliminar constraints")
         print(sys.exc_info()[0])
+        return False
     else:
-        print("Tablas borradas!")
+        print("Constraints borradas!")
+        return True
+
+def put_constraints(db):
+    try:    
+        cursor = db.cursor()    
+        a = ("""ALTER TABLE Calificaciones
+            ADD CONSTRAINT clave_M_Calif_FK
+            FOREIGN KEY (clave_Materia) REFERENCES Materia(clave)
+            ON DELETE NO ACTION 
+            ON UPDATE NO ACTION;
+        """)
+        b = ("""ALTER TABLE Calificaciones
+            ADD CONSTRAINT id_A_Calif_FK
+            FOREIGN KEY (id_Alumno) REFERENCES Alumno(id)
+            ON DELETE NO ACTION 
+            ON UPDATE NO ACTION;
+        """)
+        cursor.execute(a)
+        cursor.execute(b)      
+    except:
+        db.rollback()        
+        print(">>Error al actualizar constraints")
+        print(sys.exc_info()[0])
 
 def count_records(db, table):
     cursor = db.cursor()
     cursor.execute("SELECT COUNT(*) FROM {0}".format(table))
     items = cursor.rownumber
-    return (r.randrange(items) if items != 0 else items)
+    return (items)
 
 def read_data_materias():
     try:
