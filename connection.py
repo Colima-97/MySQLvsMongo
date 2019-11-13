@@ -131,6 +131,7 @@ def show_data(db):
 
 def insert_data(db):
     try:
+        number_of_records_inserted = 0
         cursor = db.cursor()
         tablesDatabase = get_tables(db)
         if(len(tablesDatabase) != 0):
@@ -140,7 +141,10 @@ def insert_data(db):
                 read_data_nombres()
                 
             n = int(input("¿Cuántos datos desea insertar? "))
-
+            times_file = open('timesMySQL.txt', mode="w", encoding = 'UTF-8')
+            print("Start time: " + t.strftime("%X"))
+            times_file.write("Hora de inicio: " + t.strftime("%X"))
+            times_file.close()
             for _ in range(n):
                 student_name = randomize_data(db, 'Alumno')
                 query_alumno = ("""INSERT INTO Alumno(id, nombre) 
@@ -165,7 +169,10 @@ def insert_data(db):
                 cursor.execute(query_calificaciones)
                 db.commit()
 
-                print("Datos insertados!")
+            print("Datos insertados!")
+            times_file = open('timesMySQL.txt', mode="a", encoding = 'UTF-8')
+            times_file.write("\n"+str(n*3)+" datos insertados exitosamente\nHora de fin: " + t.strftime("%X"))
+            times_file.close()
         else:
             print("No hay tablas aún!")
     except:
@@ -202,7 +209,7 @@ def del_data(db):
                     cursor.execute(query_materia)
                     cursor.execute(query_alumno)
 
-                    print("Se borraron {0}!".format(datos_borrados))
+                    print("Se borraron {0}!".format(deleted_data))
                     put_constraints(db)
                 else:
                     print("Opción no válida, abortando borrado de registros!")
