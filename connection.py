@@ -180,8 +180,9 @@ def drop_tables(db):
 
 def count_records(db, table):
     cursor = db.cursor()
-    items = cursor.execute("SELECT COUNT(*) FROM {0}".format(table))
-    return (r.randrange(items))
+    cursor.execute("SELECT COUNT(*) FROM {0}".format(table))
+    items = cursor.rownumber
+    return ( 0 if items == 0 else r.randrange(items))
 
 def read_data_materias():
     try:
