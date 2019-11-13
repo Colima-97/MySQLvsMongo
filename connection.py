@@ -208,10 +208,10 @@ def r_data(db, table):
             return n_subject
         else:
             pass
-    except SystemError:
-        pass
-    else:
-        pass
+    except:
+        print('>>Error al crear los datos')
+        print(sys.exc_info()[0])
+        
 #------------------------------HELPERS-------------------------
 #-------------------------------MAIN---------------------------
 def main():
