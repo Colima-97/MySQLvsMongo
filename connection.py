@@ -86,21 +86,43 @@ def show_data(db):
         cursor = db.cursor()
         tablesDatabase = get_tables(db)
         if(len(tablesDatabase) != 0):
-            query_count_alumno = ("SELECT COUNT (id) FROM Alumno;")
-            query_count_materia = ("SELECT COUNT (clave) FROM Materia;")
-            query_count_calif = ("SELECT COUNT (valor) FROM Calificaciones")
-
+            while(True):
+                n = int(input('¿Cuántos datos desea ver? '))
+                if(n < 1):
+                    print(">>Error! Debe ser mayor a 1")
+                else:
+                    break
+            
+            print('\n'*2)
             print("Alumno")
-            cursor.execute("SELECT * FROM Alumno LIMIT 10;")
-            print("Tiene {0} registros".format(cursor.execute(query_count_alumno))) 
+            cursor.execute("SELECT * FROM Alumno LIMIT {0};".format(n))
+            student_result = cursor.fetchall()
+            for row in student_result:
+                id = row[0]
+                name = row[1]
+                print("id: {0} \t name: {1}".format(id,name))
+            print("Tiene {0} registros en total".format(count_records(db,'Alumno'))) 
             
+            print('\n'*2)
             print("Materia")
-            cursor.execute("SELECT * FROM Materia LIMIT 10;")
-            print("Tiene {0} registros".format(cursor.execute(query_count_materia)))
+            cursor.execute("SELECT * FROM Materia LIMIT {0};".format(n))
+            subject_result = cursor.fetchall()
+            for row in subject_result:
+                key = row[0]                
+                name = row[1]
+                print("clave_Materia: {0} \t nombre_Materia: {1}".format(key,name))
+            print("Tiene {0} registros en total".format(count_records(db,'Materia')))
             
+            print('\n'*2)
             print("Calificaciones")
-            cursor.execute("SELECT * FROM Calificaciones LIMIT 10;")
-            print("Tiene {0} registros".format(cursor.execute(query_count_calif)))
+            cursor.execute("SELECT * FROM Calificaciones LIMIT {0};".format(n))
+            score_result = cursor.fetchall()
+            for row in score_result:
+                key = row[0]
+                id = row[1]
+                value = row[2]
+                print("clave_Materia: {0} \t id_Alumno {1} \t valor: {2}".format(key,id,value))
+            print("Tiene {0} registros en total".format(count_records(db,'Calificaciones')))
         else:
             print("No hay tablas aún!")
     except:
@@ -151,10 +173,8 @@ def get_tables(db):
     tablesDatabase = []
     cursor.execute("SHOW TABLES;")
        
-    if cursor:
-        tablesDatabase = [
-            tablesDatabase.append(table) 
-            for table in cursor]
+    if (cursor.rowcount != 0):
+        tablesDatabase = [table[0] for table in cursor]
 
     return tablesDatabase
 
@@ -180,38 +200,54 @@ def drop_tables(db):
     else:
         print("Tablas borradas!")
 
-def read_data_materias():
+def count_records(db, table):
+    cursor = db.cursor()
+    cursor.execute("SELECT COUNT(*) FROM {0}".format(table))
+    items = cursor.rownumber
+    return (r.randrange(items) if items != 0 else items)
 
-    materias = open('materias.txt', 'r')
-    for i in materias.readlines():
-        if(i != None or i != ""):
-            i = i.rstrip("\n")
-            list_materias.append(i)
+def read_data_materias():
+    try:
+        materias = open('materias.txt', mode = 'r', encoding='UTF-8')
+        for i in materias.readlines():
+            if(i != None or i != ""):
+                i = i.rstrip("\n")
+                list_materias.append(i)
+    except:
+        print(">>Error con el archivo")
+        print(sys.exc_info()[0])
 
 def read_data_nombres():
-    students_name = open('nombres.txt', 'r')
-    for i in students_name.readlines():
-        if(i != None or i != ""):
-            i = i.rstrip("\n")
-            list_students_name.append(i)
-
+    try:
+        students_name = open('nombres.txt', mode = 'r', encoding='UTF-8')
+        for i in students_name.readlines():
+            if(i != None or i != ""):
+                i = i.rstrip("\n")
+                list_students_name.append(i)
+    except:
+        print(">>Error con el archivo")
+        print(sys.exc_info()[0])
 
 def r_data(db, table):
     try:
         cursor = db.cursor()
 
-        if(table == 'Alumnos'):
+        if(table == 'Alumno'):
             n_alumno = r.choice(list_students_name)
             return n_alumno
         elif(table == 'Materia'):
             n_subject = r.choice(list_materias)
             return n_subject
         else:
-            pass
+            subject = count_records(db,'Alumno')
+            subject = (r.randrange(subject) if subject != 0 else subject)
+            student = count_records(db,'Materia')
+            student = (r.randrange(student) if student != 0 else student)
+            value = r.randrange(101)
+            return subject, student, value
     except:
         print('>>Error al crear los datos')
         print(sys.exc_info()[0])
-        
 #------------------------------HELPERS-------------------------
 #-------------------------------MAIN---------------------------
 def main():
@@ -236,7 +272,7 @@ def main():
                 show_data(db)
             elif(opc == 3):
                 print(".:Insertar muchos datos:.")
-                #insert_data(db)
+                insert_data(db)
             elif(opc == 4):
                 print(".:Borrar todos los datos:.")
             elif(opc == 404):
