@@ -80,11 +80,19 @@ This option cancels the execution of the program.
 
 <hr>
 
-# (Coming soon)
-
 ### MongoDB
 
 __Requirements__
 
+Install [MongoDB Comunity Edition](https://docs.mongodb.com/manual/installation/).
+
+Install [MongoDB Compass](https://docs.mongodb.com/compass/master/install/).
+
+For Python, install [PyMongo](https://pypi.org/project/pymongo/) by [pip](https://pypi.org/project/pip/) 
+with `pip install pymongo`
+
 __Features__
 
+Apparently, it only inserts a lot of data.
+
+With [MongoDB Compass](https://docs.mongodb.com/compass/master/install/) you can check the performance of the database and compare it with MySQL performance.
